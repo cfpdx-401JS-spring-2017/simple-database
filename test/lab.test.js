@@ -13,4 +13,11 @@ describe('get object', () => {
       done();
     });
   });
+
+  it('returns null when can\'t find object by id', done => {
+    getObject('./data', 'cats', 'doesnotexist', (err, data) => {
+      assert.equal(data, null);
+      done();
+    });
+  });
 });
