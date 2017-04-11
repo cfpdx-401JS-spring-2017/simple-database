@@ -1,20 +1,20 @@
 const fs = require('fs');
 const assert = require('assert');
-const getObj = require('../lab');
+const getObject = require('../lib/lab');
 
 describe('get object', () => {
-  
-  it('reads a file', done => {
-    fs.readFile('./data/fluffy.json', (err, data) => {
-      const jsonData = JSON.parse(data);
-      assert.deepEqual(jsonData, {'name': 'fluffy'});
+
+  it('gets an object given an id', done => {
+    // fs.readFile('./data/cats/fluffy.json', (err, data) => {
+    //   const jsonData = JSON.parse(data);
+    //   assert.deepEqual(jsonData, {'name': 'fluffy'});
+    //   done();
+    getObject('./data', 'cats', 'f1de5', (err, data) => {
+      assert.deepEqual(jsonData, {
+        '_id': 'f1de5',
+        'name': 'fluffy'
+      });
       done();
     });
-    console.log('hello');
   });
-  
-  it('gets data from dogs', () => {
-    //
-  });
-
 });
