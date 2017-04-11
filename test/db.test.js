@@ -1,17 +1,18 @@
 const fs = require('fs');
 const assert = require('assert');
+const getObject = require('../lib/db');
 
 describe('get object', () => {
-    it('reads a file', done => {
-        fs.readFile('./data/cats/fluffy.json', (err, data) => {
-            //use deepequal to compare the guts of an object
-            //use json.parse to turn stringified object back into reg obj
-            const jsonData = JSON.parse(data);
-            assert.deepEqual(jsonData, {'name':'fluffy'});
+    it('reads a file gicen an id', done => {
+        //this is our callback: (err,data) =>
+        getObject('./data', 'cats', 'f1de5', (err,data) => {
+            assert.deepEqual(data, {
+                'name': 'fluffy',
+                '_id': 'f1de5'
+            });
             done();
         });
-
-        console.log('hello, or something silly');
+        
     });
 });
 
