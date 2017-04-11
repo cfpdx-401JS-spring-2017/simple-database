@@ -3,8 +3,9 @@ const assert = require('assert');
 
 describe('get object', () => {
     it('reads a file', done => {
-        fs.readFile('./data/test.txt', (err, data) => {
-            assert.equal(data, 'EYO WHAT IT DO');
+        fs.readFile('./data/hood.json', (err, data) => {
+            const jsonData = JSON.parse(data);
+            assert.deepEqual(jsonData, {'name': 'street'});
             done();
         });
         console.log('hello');
