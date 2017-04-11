@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "test:watch": "mocha -- -w"
+    "test:watch": "npm test -- -w"
   },
   "repository": {
     "type": "git",
