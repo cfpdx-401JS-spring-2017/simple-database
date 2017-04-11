@@ -3,7 +3,7 @@ const assert = require('assert');
 const getObject = require('../lib/db');
 
 describe('get object', () => {
-    it('reads a file gicen an id', done => {
+    it('gets an object given an id', done => {
         //this is our callback: (err,data) =>
         getObject('./data', 'cats', 'f1de5', (err,data) => {
             assert.deepEqual(data, {
