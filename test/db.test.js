@@ -1,4 +1,3 @@
-const fs = require('fs');
 const assert = require('assert');
 const getObject = require('../lib/db');
 
@@ -34,4 +33,10 @@ describe('get object from database', () => {
     });
   });
 
+  it('returns null when no object with that id is found', done => {
+    getObject('./data', 'dogs', 'wrong', (err, data) => {
+      assert.deepEqual(data, null);
+      done();
+    });
+  });
 });
