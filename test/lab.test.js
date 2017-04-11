@@ -10,7 +10,7 @@ describe('get object', () => {
     //   assert.deepEqual(jsonData, {'name': 'fluffy'});
     //   done();
     getObject('./data', 'cats', 'f1de5', (err, data) => {
-      assert.deepEqual(jsonData, {
+      assert.deepEqual(data, {
         '_id': 'f1de5',
         'name': 'fluffy'
       });
