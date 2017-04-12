@@ -3,8 +3,7 @@ const assert = require('assert');
 const getObject = require('../lib/db');
 
 describe('get object', () => {
-    it('gets an object given an id', done => {
-        //this is our callback: (err,data) =>
+    it('gets a cat object given an id', done => {
         getObject('./data', 'cats', 'f1de5', (err,data) => {
             assert.deepEqual(data, {
                 'name': 'fluffy',
@@ -13,6 +12,7 @@ describe('get object', () => {
             done();
         });  
     });
+
     it('returns null when can\'t find object by id', done => {
         getObject('./data', 'cats', 'doesnotexist', (err, data)=> {
             assert.equal(data, null);
@@ -21,6 +21,36 @@ describe('get object', () => {
         });
     });
 
+    it('gets a 2nd cat object given an id', done => {
+        getObject('./data', 'cats', 'oxe34', (err, data) => {
+            assert.deepEqual(data, {
+                'name': 'ada',
+                '_id': 'oxe34'
+            });
+            done();
+        });
+    });
+
+});
+
+it('gets a dog object given an id', done => {
+    getObject('./data', 'dogs', '6ht7u', (err, data) => {
+        assert.deepEqual(data, {
+            'name': 'beau',
+            '_id': '6ht7u'
+        });
+        done();
+    });
+});
+
+it('gets a 2nd dog object given an id', done => {
+    getObject('./data', 'dogs', 't33t0', (err, data) => {
+        assert.deepEqual(data, {
+            'name': 'lp',
+            '_id': 't33t0'
+        });
+        done();
+    });
 });
 
 
