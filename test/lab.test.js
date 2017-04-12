@@ -1,4 +1,3 @@
-const fs = require('fs');
 const assert = require('assert');
 const getObject = require('../lib/lab');
 
@@ -11,15 +10,15 @@ describe('get object', () => {
       });
       done();
     });
+  });
 
-    it('gets second cat given an id', done => {
-      getObject('./data', 'cats', '0xe34', (err, data) => {
-        assert.deepEqual(data, {
-          '_id': '0xe34',
-          'name': 'swift smasher'
-        });
-        done();
+  it('gets second cat given an id', done => {
+    getObject('./data', 'cats', '0xe34', (err, data) => {
+      assert.deepEqual(data, {
+        '_id': '0xe34',
+        'name': 'swift smasher'
       });
+      done();
     });
   });
 
@@ -31,15 +30,15 @@ describe('get object', () => {
       });
       done();
     });
+  });
 
-    it('gets second dog given an id', done => {
-      getObject('./data', 'dogs', '6ht7u', (err, data) => {
-        assert.deepEqual(data, {
-          '_id': '6ht7u',
-          'name': 'mr sprinkles'
-        });
-        done();
+  it('gets second dog given an id', done => {
+    getObject('./data', 'dogs', '6ht7u', (err, data) => {
+      assert.deepEqual(data, {
+        '_id': '6ht7u',
+        'name': 'mr sprinkles'
       });
+      done();
     });
   });
 
