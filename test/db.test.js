@@ -11,9 +11,18 @@ describe('get object', () => {
                 '_id': 'f1de5'
             });
             done();
-        });
-        
+        });  
     });
+    it('returns null when can\'t find object by id', done => {
+        getObject('./data', 'cats', 'doesnotexist', (err, data)=> {
+            assert.equal(data, null);
+            //you must call done within the async function, within assert.equal
+            done();
+        });
+    });
+
 });
+
+
 
 
