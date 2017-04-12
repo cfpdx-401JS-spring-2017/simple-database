@@ -58,7 +58,7 @@ describe('db', () => {
 });
 
 describe('db.save', () => {
-    it.only('saves the data into a file and returns the object with a new id', (done) => {
+    it('saves the data into a file and returns the object with a new id', (done) => {
         const maru = {
             name: 'maru',
             type: 'scottish fold'
