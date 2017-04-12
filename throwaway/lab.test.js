@@ -3,11 +3,10 @@ const getObject = require('../lib/lab');
 
 describe('get object', () => {
   it('gets a cat given an id', done => {
-    getObject('./data', 'cats', 'f1de5', (err, data) => {
-      assert.deepEqual(data, {
-        '_id': 'f1de5',
-        'name': 'fluffy'
-      });
+    const id = 'f1de5';
+    getObject('./data', 'cats', id, (err, cat) => {
+      assert.equal(cat._id, id);
+      assert.equal(cat.name, 'swift smasher');
       done();
     });
   });
