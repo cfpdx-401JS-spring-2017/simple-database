@@ -8,8 +8,8 @@
     "mocha": "^3.2.0"
   },
   "scripts": {
-    "test": "mocha"
-    // "test:watch"
+    "test": "mocha",
+    "test:watch":"npm test -- -w" 
   },
   "repository": {
     "type": "git",

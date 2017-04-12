@@ -1,4 +1,4 @@
-const fs = require('fs');
+
 const assert = require('assert');
 const getObject = require('../lib/db');
 
