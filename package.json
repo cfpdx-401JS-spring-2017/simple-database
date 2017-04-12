@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "shortid": "^2.2.8"
+  },
   "devDependencies": {
     "mocha": "^3.2.0"
   },
   "scripts": {
     "test": "mocha",
-    "test:watch": "npm test -- -w" 
+    "test:watch": "npm test -- -w"
   },
   "repository": {
     "type": "git",
