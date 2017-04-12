@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "test:watch":"npm test -- -w" 
+    "test:watch": "npm test -- -w" 
   },
   "repository": {
     "type": "git",

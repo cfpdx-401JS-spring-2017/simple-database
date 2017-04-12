@@ -1,10 +1,24 @@
 
 const assert = require('assert');
-const getObject = require('../lib/db');
+const dbFactory = require('../lib/db-factory');
 
-describe('get object', () => {
+const TEST_DIR = './data';
+const db = dbFactory(TEST_DIR);
+
+
+
+describe('db.get()', () => {
+
+    it('returns null when can\'t find object by id', done => {
+       db.get('cats', 'doesnotexist', (err, data)=> {
+            assert.equal(data, null);
+            //you must call done within the async function, within assert.equal
+            done();
+        });
+    });
+
     it('gets a cat object given an id', done => {
-        getObject('./data', 'cats', 'f1de5', (err,data) => {
+       db.get('cats', 'f1de5', (err,data) => {
             assert.deepEqual(data, {
                 'name': 'fluffy',
                 '_id': 'f1de5'
@@ -13,16 +27,9 @@ describe('get object', () => {
         });  
     });
 
-    it('returns null when can\'t find object by id', done => {
-        getObject('./data', 'cats', 'doesnotexist', (err, data)=> {
-            assert.equal(data, null);
-            //you must call done within the async function, within assert.equal
-            done();
-        });
-    });
 
     it('gets a 2nd cat object given an id', done => {
-        getObject('./data', 'cats', 'oxe34', (err, data) => {
+        db.get('cats', 'oxe34', (err, data) => {
             assert.deepEqual(data, {
                 'name': 'ada',
                 '_id': 'oxe34'
@@ -34,7 +41,7 @@ describe('get object', () => {
 });
 
 it('gets a dog object given an id', done => {
-    getObject('./data', 'dogs', '6ht7u', (err, data) => {
+    db.get('dogs', '6ht7u', (err, data) => {
         assert.deepEqual(data, {
             'name': 'beau',
             '_id': '6ht7u'
@@ -44,7 +51,7 @@ it('gets a dog object given an id', done => {
 });
 
 it('gets a 2nd dog object given an id', done => {
-    getObject('./data', 'dogs', 't33t0', (err, data) => {
+    db.get('dogs', 't33t0', (err, data) => {
         assert.deepEqual(data, {
             'name': 'lp',
             '_id': 't33t0'
