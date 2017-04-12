@@ -35,13 +35,13 @@ describe('db', () => {
   });
   
   describe('db.save', () => {
-    it.only('saves a cat and returns file with new id', done => {
+    it('saves a cat and returns file with new id', done => {
       const maru = {
         name: 'maru',
         type: 'scottish fold'
       };
       db.save('cats', maru, (err, cat) => {
-        if (err) return done(err)
+        if (err) return done(err);
         assert.equal(cat.name, maru.name);
         assert.ok(cat._id);
         done();
