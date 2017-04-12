@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "shortid": "^2.2.8"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "mocha"
