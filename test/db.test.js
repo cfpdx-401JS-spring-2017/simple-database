@@ -2,6 +2,7 @@
 const assert = require('assert');
 const dbFactory = require('../lib/db-factory');
 
+
 const TEST_DIR = './data';
 const db = dbFactory(TEST_DIR);
 
@@ -72,9 +73,21 @@ describe('db.save', () => {
             done();
         });
     });
+    it ('creates a directory if it doesn\'t exist', (done) => {
+        const baobao = {name: 'baobao', type: 'panda'};
+        db.save('bears', baobao, (err, data) => {
+            if (err) return done(err);
+            db.get('bears', data._id, (err, data) => { //data here could also be bear
+                if (err) return done(err);
+                assert.equal(data.name, baobao.name);
+                done();
+            });
+
+        });
+    });
 });
 
-
+// in order to make a directory that doesn't exist we mkdir 
 
 
 
