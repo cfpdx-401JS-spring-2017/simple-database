@@ -1,5 +1,5 @@
 const assert = require('assert');
-const dbFactory = require('../lib/db-factory')
+const dbFactory = require('../lib/db-factory');
 
 const testDir = './data';
 const db = dbFactory(testDir);
@@ -9,18 +9,33 @@ describe('db.get', () => {
   it('returns null when no object with that id is found', done => {
     db.get('dogs', 'wrong', (err, data) => {
       assert.deepEqual(data, null);
-      done()
+      done();
     });
   });
 
   it('gets a cat given an id', done => {
     db.get('cats', 'f1de5', (err, data) => {
-      if(err) return done(err);
+      if (err) return done(err);
       assert.deepEqual(data, {
         'name': 'fluffy',
         '_id': 'f1de5'
       });
     });
     done();
+  });
+
+  describe('db.save', () => {
+    it('saves data into a file and returns object with new id', (done) => {
+      const maru = {
+        name: 'Maru',
+        type: 'scottish fold'
+      };
+      db.save('cats', maru, (err, cat) => {
+        if (err) return done(err);
+        assert.equal(cat.name, maru.name);
+        assert.ok(cat._id);
+        done();
+      });
+    });
   });
 });
