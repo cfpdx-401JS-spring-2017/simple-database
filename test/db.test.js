@@ -1,5 +1,4 @@
 const assert = require('assert');
-const shortid = require('shortid');
 const SimpleDb = require('../lib/simple-db');
 
 const ROOT_DIR = './data';
@@ -36,15 +35,15 @@ describe('db', () => {
   });
   
   describe('db.save', () => {
-    it('saves a cat', done => {
-      const id = shortid.generate();
-      const newCat = {
-        _id: id,
-        name: 'Tom'
+    it.only('saves a cat and returns file with new id', done => {
+      const maru = {
+        name: 'maru',
+        type: 'scottish fold'
       };
-      db.save('cats', newCat, (err, cat) => {
-        //
-        assert.equal(cat, {});
+      db.save('cats', maru, (err, cat) => {
+        if (err) return done(err)
+        assert.equal(cat.name, maru.name);
+        assert.ok(cat._id);
         done();
       });
     });

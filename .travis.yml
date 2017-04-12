@@ -1,2 +1,2 @@
 language: "node.js"
-nod_js: "6"
+node_js: "6"
