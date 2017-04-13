@@ -96,17 +96,7 @@ describe('db', () => {
       db.getAll('bears', (err, bearsArray) => {
         if(err) return done(err);
         const parsedBears = JSON.parse(bearsArray[0]);
-        console.log(bearsArray);
         assert.equal(parsedBears.name, 'baobao');
-        done();
-      });
-    });
-
-    it('checks that we retrieve an array when there are no files in a table', (done) => {
-      const bearArray = [];
-      db.getAll('bears', (err, bears) => {
-        if (err) return done(err);
-        assert.equal(bears, bearArray);
         done();
       });
     });
