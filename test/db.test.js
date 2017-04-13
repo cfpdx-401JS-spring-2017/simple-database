@@ -6,22 +6,10 @@ const TEST_DIR = './data';
 const db = dbFactory(TEST_DIR);
 
 //create mock animal objects to pass into our test for the save function in db-factory.js
-const testCat = {
-    name: 'testCat',
-    type: 'best'
-};
-const testCat2 = {
-    name: 'testCat2',
-    type: '2ndbest'
-};
-const testDog = {
-    name: 'testDog',
-    type: 'bestDog'
-};
-const testDog2 = {
-    name: 'testDog2',
-    type: '2ndBestDog'
-};
+const testCat = {name: 'testCat',type: 'best'};
+const testCat2 = {name: 'testCat2',type: '2ndbest'};
+const testDog = {name: 'testDog', type: 'bestDog'};
+const testDog2 = {name: 'testDog2',type: '2ndBestDog'};
 
 describe('db', () => {
     before((done) => {
@@ -147,9 +135,9 @@ describe('db', () => {
             it('returns an array of all objects from requested table', (done) => {
                 db.getAll('./bears', (err, bearsArray) => {
                     console.log('bearsArray', bearsArray);
-                    const parsedArray = JSON.parse(bearsArray);
-                    console.log('parsedArray', parsedArray);
-                    assert.equal(parsedArray[0].name, 'baobao');
+                    // const parsedArray = JSON.parse(bearsArray);
+                    // console.log('parsedArray', parsedArray);
+                    assert.equal(bearsArray[0].name, 'baobao');
                     done();
                 });
             });
