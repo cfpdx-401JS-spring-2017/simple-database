@@ -33,7 +33,8 @@ Your db should offer the following methods:
 
 ### Bonus
 
-Publish to npm
+1. Adda README.md that describes how to use your simple db
+2. Publish to npm
 
 
 Here is an example of how your module might be imported (required) and used:
