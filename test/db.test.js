@@ -77,6 +77,7 @@ describe('db', () => {
         done();
       });
     });
+    
     it('creates a directory if it doesn\'t exist', (done) => {
       const baobao = {name: 'baobao', type: 'panda' };
       db.save('bears', baobao, (err, data) => {
@@ -92,11 +93,11 @@ describe('db', () => {
 
   describe('db.getAll', () => {
 
-    it('checks that we retrieve an array of the objects in the files in target directory', (done) => {
+    it('checks that we retrieve an array of the objects in the files of expected length in target directory with expected order', (done) => {
       db.getAll('bears', (err, bearsArray) => {
         if(err) return done(err);
-        const parsedBears = JSON.parse(bearsArray[0]);
-        assert.equal(parsedBears.name, 'baobao');
+        assert.equal(bearsArray[0].name, 'baobao');
+        assert.equal(bearsArray.length, 1);
         done();
       });
     });
