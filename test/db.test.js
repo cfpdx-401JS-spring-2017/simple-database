@@ -75,7 +75,7 @@ describe('db', () => {
       db.getAll('cats', (err, catsArray) => {
         if (err) return done(err);
         const jsonCats = JSON.parse(catsArray[0]);
-        assert.equal(jsonCats.name, 'fluffy');
+        assert.equal(jsonCats.name, 'swifty');
         done();
       });
     });
