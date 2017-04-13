@@ -5,11 +5,12 @@ const dbFactory = require('../lib/db-factory');
 const TEST_DIR = './data';
 const db = dbFactory(TEST_DIR);
 
+
 //create mock animal objects to pass into our test for the save function in db-factory.js
-const testCat = {name: 'testCat',type: 'best'};
-const testCat2 = {name: 'testCat2',type: '2ndbest'};
-const testDog = {name: 'testDog', type: 'bestDog'};
-const testDog2 = {name: 'testDog2',type: '2ndBestDog'};
+const testCat = { name: 'testCat', type: 'best' };
+const testCat2 = { name: 'testCat2', type: '2ndbest' };
+const testDog = { name: 'testDog', type: 'bestDog' };
+const testDog2 = { name: 'testDog2', type: '2ndBestDog' };
 
 describe('db', () => {
     before((done) => {
@@ -91,7 +92,7 @@ describe('db', () => {
 
         describe('db.save', () => {
             before((done) => {
-                rimraf(TEST_DIR, err => {
+                rimraf(TEST_DIR, () => {
                     done();
                 });
             });
@@ -124,22 +125,32 @@ describe('db', () => {
         });
 
         describe('db.getAll', () => {
-            // it('returns empty array when no objects exist', done => {
-                // const emptyArray = [];
-            //     db.getAll('./bears', (err, data) =>
-            //         assert.deepEqual(null, emptyArray);
-            //     done();
-            // });
 
-        
+
             it('returns an array of all objects from requested table', (done) => {
-                db.getAll('./bears', (err, bearsArray) => {
+                db.getAll('bears', (err, bearsArray) => {
                     assert.equal(bearsArray[0].name, 'baobao');
                     done();
                 });
             });
-        });
 
+            describe('db.getAll.EmptyArray', () => {
+
+                before((done) => {
+                    rimraf(`${TEST_DIR}/bears/*`, () => {
+                        done();
+                    });
+                });
+                it('returns empty array when no objects exist', done => {
+                    db.getAll('bears', (err, data) => {
+                        assert.deepEqual(data, []);
+                        done();
+                    });
+
+                });
+            });
+
+        });
     });
 });
 
