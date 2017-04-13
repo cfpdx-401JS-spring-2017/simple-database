@@ -10,6 +10,9 @@ const fluffy = {
 const swifty = {
   name: 'swifty',
   type: 'tabby' };
+const gongfucha = {
+  name: 'gongfucha',
+  type: 'panda' };
 
 describe('db', () => {
 
@@ -31,6 +34,14 @@ describe('db', () => {
     db.save('cats', swifty, (err, data) => {
       if (err) return done(err);
       swifty._id = data._id;
+      done();
+    });
+  });
+
+  before(done => {
+    db.save('bears', gongfucha, (err, data) => {
+      if (err) return done(err);
+      gongfucha._id = data._id;
       done();
     });
   });
@@ -115,11 +126,17 @@ describe('db', () => {
     });
   });
 
-  // describe('db.update', () => {
+  describe('db.update', () => {
 
-  //   it('updates and returns an object', done => {
-  //     //
-  //   });
-  // });
+    it.only('updates and returns an object', done => {
+      //
+      const obj = gongfucha;
+      db.update('bears', obj, (err, data) => {
+        if (err) return done(err);
+        assert.equal(data, 'Panda!');
+        done();
+      });
+    });
+  });
 
 });
