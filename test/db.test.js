@@ -4,17 +4,17 @@ const dbFactory = require('../lib/db-factory');
 const fs = require('fs');
 
 const TEST_DIR = './data';
-const testCat = {
-  name: 'testcat',
-  type: 'best'
-};
-const testCat2 = {
-  name: 'testcat2',
-  type: 'worst'
-};
 const db = dbFactory(TEST_DIR);
 
 describe('db', () => {
+  const testCat = {
+    name: 'testcat',
+    type: 'best'
+  };
+  const testCat2 = {
+    name: 'testcat2',
+    type: 'worst'
+  };
 
   before((done) => {
     db.save('cats', testCat, (err, data) => {
@@ -23,6 +23,7 @@ describe('db', () => {
       done();
     });
   });
+
   before((done) => {
     db.save('cats', testCat2, (err, data) => {
       if (err) return done(err);
@@ -71,6 +72,7 @@ describe('db', () => {
         name: 'maru',
         type: 'scottish fold'
       };
+
       db.save('cats', maru, (err, cat) => {
         if (err) return done(err);
         assert.equal(cat.name, maru.name);
@@ -81,8 +83,10 @@ describe('db', () => {
 
     it('creates a directory if it doesn\'t exist', (done) => {
       const baobao = { name: 'baobao', type: 'panda' };
+
       db.save('bears', baobao, (err, data) => {
         if (err) return done(err);
+
         db.get('bears', data._id, (err, bear) => {
           if (err) return done(err);
           assert.equal(bear.name, baobao.name);
@@ -107,8 +111,10 @@ describe('db', () => {
       const garfield = {
         name: 'garfield',
       };
+
       db.save('cats', garfield, err => {
         if (err) return done(err);
+
         db.getAll('cats', (err, catsArray) => {
           if (err) return done(err);
           assert.equal(catsArray.length, 2);
@@ -132,7 +138,6 @@ describe('db', () => {
 
         db.update('cats', tom, (err, updatedObject) => {
           if (err) return done(err);
-
           const catObjectInFile = fs.readFileSync(`./data/cats/${tom._id}.json`);
           assert.deepEqual(JSON.parse(catObjectInFile), tom);
           assert.equal(updatedObject.name, 'jerry');
