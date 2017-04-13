@@ -93,4 +93,17 @@ describe('db', () => {
     });
 
   });
+
+  describe('db.remove', () => {
+
+    it.only('removes an object from a directory', done => {
+      const id = swifty._id;
+      db.remove('cats', id, (err, data) => {
+        if (err) return done(err);
+        assert.equal(data, '{ removed: true }');
+        done();
+      });
+    });
+    //
+  });
 });

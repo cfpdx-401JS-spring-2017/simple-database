@@ -1,4 +1,5 @@
-# Lab 2: Keeley Hammond
+# Lab 3: Keeley Hammond
+## INCOMPLETE: TO BE COMPLETED
 
 In this lab, we refactored our last lab and created three functions attached to a class (SimpleDb - get(), save(), and gatAll()) that we could then use to run tests. To do this, we:
 
