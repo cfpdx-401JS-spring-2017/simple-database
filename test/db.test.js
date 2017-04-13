@@ -91,13 +91,47 @@ describe('db', () => {
                 done();
             });
         });
-    
+
         it('gets a 2nd dog object given an id', done => {
             db.get('dogs', testDog2._id, (err, data) => {
                 if (err) return done(err);
                 assert.equal(data.name, testDog2.name);
                 assert.equal(data._id, testDog2._id);
                 done();
+            });
+        });
+
+        describe('db.save', () => {
+            before((done) => {
+                rimraf(TEST_DIR, err => {
+                    done();
+                });
+            });
+            it('saves the data into a file and returns the object with a new id', (done) => {
+                const maru = {
+                    name: 'maru',
+                    type: 'scottish fold'
+                };
+                //data in this callback = cat
+                db.save('cats', maru, (err, cat) => {
+                    if (err) return done(err);
+                    assert.equal(cat.name, maru.name);
+                    //assert.ok checks that something is present, makes sure that we have have an id
+                    assert.ok(cat._id);
+                    done();
+                });
+            });
+            it('creates a directory if it doesn\'t exist', (done) => {
+                const baobao = { name: 'baobao', type: 'panda' };
+                db.save('bears', baobao, (err, data) => {
+                    if (err) return done(err);
+                    db.get('bears', data._id, (err, data) => { //data here could also be bear
+                        if (err) return done(err);
+                        assert.equal(data.name, baobao.name);
+                        done();
+                    });
+
+                });
             });
         });
 
@@ -120,41 +154,8 @@ describe('db', () => {
     });
 });
 
-describe('db.save', () => {
-    before((done) => {
-        rimraf(TEST_DIR, err => {
-            done();
-        });
-    });
-    it('saves the data into a file and returns the object with a new id', (done) => {
-        const maru = {
-            name: 'maru',
-            type: 'scottish fold'
-        };
-        //data in this callback = cat
-        db.save('cats', maru, (err, cat) => {
-            if (err) return done(err);
-            assert.equal(cat.name, maru.name);
-            //assert.ok checks that something is present, makes sure that we have have an id
-            assert.ok(cat._id);
-            done();
-        });
-    });
-    it('creates a directory if it doesn\'t exist', (done) => {
-        const baobao = { name: 'baobao', type: 'panda' };
-        db.save('bears', baobao, (err, data) => {
-            if (err) return done(err);
-            db.get('bears', data._id, (err, data) => { //data here could also be bear
-                if (err) return done(err);
-                assert.equal(data.name, baobao.name);
-                done();
-            });
 
-        });
-    });
-});
-
-// in order to make a directory that doesn't exist we mkdir 
+// in order to make a directory that doesn't exist we mkdirp
 
 
 
