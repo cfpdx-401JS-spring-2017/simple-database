@@ -1,24 +1,20 @@
-# Lab 1: Keeley Hammond
+# Lab 2: Keeley Hammond
 
-In this lab, we successfully wrote asynch tests and practiced using asynch functions and callbacks. To do this, we:
+In this lab, we refactored our last lab and created three functions attached to a class (SimpleDb - get(), save(), and gatAll()) that we could then use to run tests. To do this, we:
 
-1. Implemented the getObject method: `getObject(<data-dir>, <table>, <id>, callback)`
+1. Refactored our: `getObject(<data-dir>, <table>, <id>, callback)` method into `db.get(<data-dir>, <table>, <id>, callback)`.
+
+2. Set a constant variable for root directory within our class constructor, `this.rootDir`. We also set variable names for our tables and ids as inputs for arguments.
 
 Usage:
 
 ```
-getObject('./data', 'cats', f1de5', callback)
-getObject('./data', 'dogs', 'l33t0', callback)
+get(this.rootDir, table, id, callback)
+getAll(this.rootDir, table, callback)
 ```
 
-2. Tested the getObject method with two directories, and two json objects within each of the two directories
+2. Used rimraf and mkdirp to ensure that if a directory does not exist, that it will be created. Rimraf also ensures that our testing environment will start with a clean by deleting old directories.
 
 3. `getObject` returns `null`, should an object not exist.
 
-4. Tested our function to return null, to ensure it was acting as we thought. We used `if (err) throw err` and then refactored to the below to fulfill the null requirement:
-
-```
-if (err) {
-  return callback(err, null);
-}
-```
+4. `db.save` uses the shortid node library to assign an id to new objects being created within the save function.
