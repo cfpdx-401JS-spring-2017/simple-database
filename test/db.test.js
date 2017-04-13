@@ -131,12 +131,9 @@ describe('db', () => {
             //     done();
             // });
 
-           //I'm not sure where to push this object into an array?
+        
             it('returns an array of all objects from requested table', (done) => {
                 db.getAll('./bears', (err, bearsArray) => {
-                    console.log('bearsArray', bearsArray);
-                    // const parsedArray = JSON.parse(bearsArray);
-                    // console.log('parsedArray', parsedArray);
                     assert.equal(bearsArray[0].name, 'baobao');
                     done();
                 });
