@@ -136,11 +136,14 @@ describe('db', () => {
         });
 
         describe('db.getAll', () => {
-            it('returns empty array when no files in table', done => {
-                done();
-            });
+            // it('returns empty array when no objects exist', done => {
+                // const emptyArray = [];
+            //     db.getAll('./bears', (err, data) =>
+            //         assert.deepEqual(null, emptyArray);
+            //     done();
+            // });
 
-           
+           //I'm not sure where to push this object into an array?
             it('returns an array of all objects from requested table', (done) => {
                 db.getAll('./bears', (err, bearsArray) => {
                     console.log('bearsArray', bearsArray);
