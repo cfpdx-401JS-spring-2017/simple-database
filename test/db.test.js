@@ -1,10 +1,17 @@
 const assert = require('assert');
 const dbFactory = require('../lib/db-factory');
-
+const rimraf = require('rimraf');
 const testDir = './data';
 const db = dbFactory(testDir);
 
 describe('db.get', () => {
+
+  before(done => {
+    rimraf('./data/bears', err => {
+      if(err) return done(err);
+      done(err);
+    });
+  });
 
   it('returns null when no object with that id is found', done => {
     db.get('dogs', 'wrong', (err, data) => {
