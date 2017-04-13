@@ -19,7 +19,10 @@ describe('db', () => {
     db.save('cats', testCat, (err, data) => {
       if (err) return done(err);
       testCat._id = data._id;
+      done();
     });
+  });
+  before((done) => {
     db.save('cats', testCat2, (err, data) => {
       if (err) return done(err);
       testCat2._id = data._id;
@@ -75,7 +78,7 @@ describe('db', () => {
       });
     });
     it('creates a directory if it doesn\'t exist', (done) => {
-      const baobao = { name: 'baobao', type: 'panda' };
+      const baobao = {name: 'baobao', type: 'panda' };
       db.save('bears', baobao, (err, data) => {
         if (err) return done(err);
         db.get('bears', data._id, (err, bear) => {
@@ -89,14 +92,24 @@ describe('db', () => {
 
   describe('db.getAll', () => {
 
-    // it('checks that we retrieve an array when there are no files in a table', (done) => {
-    //   const bearArray = [];
-    //   db.getAll('./bears', (err, bears) => {
-    //     if(err) return done(err);
-    //     assert.equal(bears, bearArray);
-    //     done();
-    //   });
-    // });
+    it('checks that we retrieve an array of the objects in the files in target directory', (done) => {
+      db.getAll('bears', (err, bearsArray) => {
+        if(err) return done(err);
+        const parsedBears = JSON.parse(bearsArray[0]);
+        console.log(bearsArray);
+        assert.equal(parsedBears.name, 'baobao');
+        done();
+      });
+    });
+
+    it('checks that we retrieve an array when there are no files in a table', (done) => {
+      const bearArray = [];
+      db.getAll('bears', (err, bears) => {
+        if (err) return done(err);
+        assert.equal(bears, bearArray);
+        done();
+      });
+    });
   });
 });
 
