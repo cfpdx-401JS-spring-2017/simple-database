@@ -73,7 +73,7 @@ describe('db', () => {
         it('returns array of all objects from the requested table', done => {
             db.getAll('cats', (err, cats) => {
                 if(err) return done(err);
-                assert.equal(cats.length, 2);
+                assert.equal(cats.length, 3);
                 done();
             });
         });
