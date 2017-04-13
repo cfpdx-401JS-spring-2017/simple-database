@@ -77,9 +77,9 @@ describe('db', () => {
         done();
       });
     });
-    
+
     it('creates a directory if it doesn\'t exist', (done) => {
-      const baobao = {name: 'baobao', type: 'panda' };
+      const baobao = { name: 'baobao', type: 'panda' };
       db.save('bears', baobao, (err, data) => {
         if (err) return done(err);
         db.get('bears', data._id, (err, bear) => {
@@ -93,12 +93,26 @@ describe('db', () => {
 
   describe('db.getAll', () => {
 
-    it('checks that we retrieve an array of the objects in the files of expected length in target directory with expected order', (done) => {
+    it('checks that we retrieve an array of the objects in the files in target directory', (done) => {
       db.getAll('bears', (err, bearsArray) => {
-        if(err) return done(err);
+        if (err) return done(err);
         assert.equal(bearsArray[0].name, 'baobao');
         assert.equal(bearsArray.length, 1);
         done();
+      });
+    });
+
+    it('checks that array of the objects is in in expected order', (done) => {
+      const garfield = {
+        name: 'garfield',
+      };
+      db.save('cats', garfield, err => {
+        if (err) return done(err);
+        db.getAll('cats', (err, catsArray) => {
+          if(err) return done(err);
+          assert.equal(catsArray.length, 2);
+          done();
+        });
       });
     });
   });
