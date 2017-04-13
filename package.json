@@ -1,0 +1,28 @@
+{
+  "name": "simple-database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.1",
+    "shortid": "^2.2.8"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "test:watch": "npm test -- -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lilaivy/simple-database.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lilaivy/simple-database/issues"
+  },
+  "homepage": "https://github.com/lilaivy/simple-database#readme"
+}
