@@ -44,8 +44,6 @@ const getObject = require('./getObject');
 
     
 getObject('./data', 'cats', id, (err, cat) => {
-  if(err) return console.log('ERROR', err);
-  console.log('got cat', cat);
 } 
 ```
 
