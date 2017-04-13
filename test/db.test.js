@@ -1,19 +1,27 @@
 
 const assert = require('assert');
 const rimraf = require('rimraf');
+const dbFactory = require('../lib/db-factory');
+const TEST_DIR = './data';
+const db = dbFactory(TEST_DIR);
+
+//create mock animal objects to pass into our test for the save function in db-factory.js
 const testCat = {
     name: 'testCat',
     type: 'best'
+};
+const testCat2 = {
+    name: 'testCat2',
+    type: '2ndbest'
 };
 const testDog = {
     name: 'testDog',
     type: 'bestDog'
 };
-const dbFactory = require('../lib/db-factory');
-
-
-const TEST_DIR = './data';
-const db = dbFactory(TEST_DIR);
+const testDog2 = {
+    name: 'testDog2',
+    type: '2ndBestDog'
+};
 
 describe('db', () => {
     before((done) => {
@@ -23,11 +31,26 @@ describe('db', () => {
             done();
         });
     });
+    before((done) => {
+        db.save('cats', testCat2, (err, data) => {
+            if (err) return done(err);
+            testCat2._id = data._id;
+            done();
+        });
+    });
 
     before((done) => {
         db.save('dogs', testDog, (err, data) => {
             if (err) return done(err);
             testDog._id = data._id;
+            done();
+        });
+    });
+
+    before((done) => {
+        db.save('dogs', testDog2, (err, data) => {
+            if (err) return done(err);
+            testDog2._id = data._id;
             done();
         });
     });
@@ -50,16 +73,16 @@ describe('db', () => {
                 done();
             });
         });
-//TODO: make 2nd Test Cat
-        // it('gets a 2nd cat object given an id', done => {
-        //     db.get('cats', 'oxe34', (err, data) => {
-        //         assert.deepEqual(data, {
-        //             'name': 'ada',
-        //             '_id': 'oxe34'
-        //         });
-        //         done();
-        //     });
-        // });
+
+        it('gets a 2nd cat object given an id', done => {
+            db.get('cats', testCat2._id, (err, data) => {
+                if (err) return done(err);
+                assert.equal(data.name, testCat2.name);
+                assert.equal(data._id, testCat2._id);
+                done();
+            });
+        });
+
         it('gets a dog object given an id', done => {
             db.get('dogs', testDog._id, (err, data) => {
                 if (err) return done(err);
@@ -68,19 +91,18 @@ describe('db', () => {
                 done();
             });
         });
-        //TODO: make a 2nd test dog
-        // it('gets a 2nd dog object given an id', done => {
-        //     db.get('dogs', 't33t0', (err, data) => {
-        //         assert.deepEqual(data, {
-        //             'name': 'lp',
-        //             '_id': 't33t0'
-        //         });
-        //         done();
-        //     });
-        // });
+    
+        it('gets a 2nd dog object given an id', done => {
+            db.get('dogs', testDog2._id, (err, data) => {
+                if (err) return done(err);
+                assert.equal(data.name, testDog2.name);
+                assert.equal(data._id, testDog2._id);
+                done();
+            });
+        });
 
         describe('db.getAll', () => {
-            it ('returns an array of all objects from requested table', done => {
+            it('returns an array of all objects from requested table', done => {
 
                 done();
             });
