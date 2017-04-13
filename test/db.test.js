@@ -4,44 +4,38 @@ const SimpleDb = require('../lib/simple-db');
 
 const ROOT_DIR = './data';
 const db = new SimpleDb(ROOT_DIR);
+const fluffy = {
+  name: 'fluffy',
+  type: 'maine coon' };
+const swifty = {
+  name: 'swifty',
+  type: 'tabby' };
 
 describe('db', () => {
 
-  describe('db.get', () => {
-
-    it('gets a cat given an id', done => {
-      const id = 'f1de5';
-      db.get('cats', id, (err, cat) => {
-        assert.equal(cat._id, id);
-        assert.equal(cat.name, 'fluffy');
-        done();
-      });
-    });
-
-    it('gets a dog given an id', done => {
-      const id = 'l33t0';
-      db.get('dogs', id, (err, dog) => {
-        assert.equal(dog._id, id);
-        assert.equal(dog.name, 'bowwow');
-        done();
-      });
-    });
-
-    it('returns null when can\'t find object by id', done => {
-      db.get('cats', 'doesnotexist', (err, data) => {
-        assert.equal(data, null);
-        done();
-      });
+  before(done => {
+    rimraf(ROOT_DIR, err => {
+      done(err);
     });
   });
-  
-  describe('db.save', () => {
 
-    before (done => {
-      rimraf('./data/bears', err => {
-        done(err);
-      });
+  before(done => {
+    db.save('cats', fluffy, (err, data) => {
+      if (err) return done(err);
+      fluffy._id = data._id;
+      done();
     });
+  });
+
+  before(done => {
+    db.save('cats', swifty, (err, data) => {
+      if (err) return done(err);
+      swifty._id = data._id;
+      done();
+    });
+  });
+
+  describe('db.save', () => {
 
     it('saves a cat and returns file with new id', done => {
       const maru = {
@@ -69,17 +63,34 @@ describe('db', () => {
     });
   });
 
+  describe('db.get', () => {
+
+    it('gets a cat given an id', done => {
+      const id = fluffy._id;
+      db.get('cats', id, (err, cat) => {
+        assert.equal(cat._id, fluffy._id);
+        assert.equal(cat.name, fluffy.name);
+        done();
+      });
+    });
+
+    it('returns null when can\'t find object by id', done => {
+      db.get('cats', 'doesnotexist', (err, data) => {
+        assert.equal(data, null);
+        done();
+      });
+    });
+  });
+
   describe('db.getAll', () => {
 
     it('gets all objects in rootDir, returns array', done => {
-      db.getAll('cats', (err, catsArray) => {
+      db.getAll('cats', (err, cats) => {
         if (err) return done(err);
-        const jsonCats = JSON.parse(catsArray[0]);
-        assert.equal(jsonCats.name, 'swifty');
+        assert.equal(cats.length, 3);
         done();
       });
     });
 
   });
-
 });
