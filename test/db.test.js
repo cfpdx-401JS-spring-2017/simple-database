@@ -1,4 +1,5 @@
 const assert = require('assert');
+const rimraf = require('rimraf');
 const SimpleDb = require('../lib/simple-db');
 
 const ROOT_DIR = './data';
@@ -35,6 +36,13 @@ describe('db', () => {
   });
   
   describe('db.save', () => {
+
+    before (done => {
+      rimraf('./data/bears', err => {
+        done(err);
+      });
+    });
+
     it('saves a cat and returns file with new id', done => {
       const maru = {
         name: 'maru',
@@ -59,6 +67,19 @@ describe('db', () => {
         });
       });
     });
+  });
+
+  describe('db.getAll', () => {
+
+    it('gets all objects in rootDir, returns array', done => {
+      db.getAll('cats', (err, catsArray) => {
+        if (err) return done(err);
+        const jsonCats = JSON.parse(catsArray[0]);
+        assert.equal(jsonCats.name, 'fluffy');
+        done();
+      });
+    });
+
   });
 
 });
