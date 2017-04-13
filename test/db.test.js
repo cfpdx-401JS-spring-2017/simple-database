@@ -136,16 +136,17 @@ describe('db', () => {
         });
 
         describe('db.getAll', () => {
-            it('returns an array of all objects from requested table', done => {
-
+            it('returns empty array when no files in table', done => {
                 done();
             });
 
-            //when writing tests, it's a good practice to start with the assert
-            it('checks that we returns empty array when no files in table', (done) => {
+           
+            it('returns an array of all objects from requested table', (done) => {
                 db.getAll('./bears', (err, bearsArray) => {
-                    //json.parse here
-                    assert.equal(bearsArray[0].name, 'baobao');
+                    console.log('bearsArray', bearsArray);
+                    const parsedArray = JSON.parse(bearsArray);
+                    console.log('parsedArray', parsedArray);
+                    assert.equal(parsedArray[0].name, 'baobao');
                     done();
                 });
             });
