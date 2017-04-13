@@ -127,13 +127,29 @@ describe('db', () => {
   });
 
   describe('db.update', () => {
-
+    
+    //TODO: Complete update function and pass test
     it.only('updates and returns an object', done => {
-      //
       const obj = gongfucha;
+      gongfucha.type = 'red panda';
       db.update('bears', obj, (err, data) => {
         if (err) return done(err);
         assert.equal(data, 'Panda!');
+        done();
+      });
+    });
+
+    //TODO: Make assert equal correctly read error (we are getting the error we want)
+    it('returns error if object does not exist', done => {
+      const obj = {
+        name: 'not real',
+        type: 'imaginary' 
+      };
+      db.update('bears', obj, (err, data) => {
+        if (!err) return done(err);
+        console.log(data);
+        console.log(err);
+        assert.equal(err, 'Object does not exist.');
         done();
       });
     });
