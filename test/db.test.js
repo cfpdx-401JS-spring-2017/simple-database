@@ -110,7 +110,7 @@ describe('db', () => {
       db.save('cats', garfield, err => {
         if (err) return done(err);
         db.getAll('cats', (err, catsArray) => {
-          if(err) return done(err);
+          if (err) return done(err);
           assert.equal(catsArray.length, 2);
           done();
         });
@@ -120,17 +120,20 @@ describe('db', () => {
 
   describe('db.update', () => {
 
-    it('checks that targeted object is hit', done => {
+    it('checks that targeted object is hit and content was updated and saved correctly', done => {
       const tom = {
         name: 'tom',
       };
+
       db.save('cats', tom, (err, object) => {
         if (err) return done(err);
         tom._id = object._id;
         tom.name = 'jerry';
+
         db.update('cats', tom, (err, updatedObject) => {
-          if(err) return done(err);
-          const catObjectInFile= fs.readFileSync(`./data/cats/${tom._id}.json`);
+          if (err) return done(err);
+
+          const catObjectInFile = fs.readFileSync(`./data/cats/${tom._id}.json`);
           assert.deepEqual(JSON.parse(catObjectInFile), tom);
           assert.equal(updatedObject.name, 'jerry');
           done();
@@ -138,5 +141,51 @@ describe('db', () => {
       });
     });
   });
-});
 
+  describe('db.remove', () => {
+
+    it('checks that function deletes targeted file', done => {
+      const dutchess = {
+        name: 'dutchess',
+      };
+
+      db.save('cats', dutchess, (err, object) => {
+        if (err) return done(err);
+        dutchess._id = object._id;
+
+        db.remove('cats', object._id, (err, removed) => {
+          if (err) return done(err);
+
+          db.getAll('cats', (err, catsArray) => {
+            if (err) return done(err);
+            assert.equal(catsArray.length, 3);
+            assert.ok(removed);
+            done();
+          });
+        });
+      });
+    });
+
+    it('checks that function deletes a different file', done => {
+      const pauli = {
+        name: 'pauli',
+      };
+
+      db.save('bears', pauli, (err, object) => {
+        if (err) return done(err);
+        pauli._id = object._id;
+
+        db.remove('bears', object._id, (err, removed) => {
+          if (err) return done(err);
+
+          db.getAll('bears', (err, bearsArray) => {
+            if (err) return done(err);
+            assert.equal(bearsArray.length, 1);
+            assert.ok(removed);
+            done();
+          });
+        });
+      });
+    });
+  });
+});
