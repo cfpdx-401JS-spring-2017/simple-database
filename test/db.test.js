@@ -1,6 +1,7 @@
 const assert = require('assert');
 const rimraf = require('rimraf');
 const dbFactory = require('../lib/db-factory');
+const fs = require('fs');
 
 const TEST_DIR = './data';
 const testCat = {
@@ -111,6 +112,27 @@ describe('db', () => {
         db.getAll('cats', (err, catsArray) => {
           if(err) return done(err);
           assert.equal(catsArray.length, 2);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('db.update', () => {
+
+    it('checks that targeted object is hit', done => {
+      const tom = {
+        name: 'tom',
+      };
+      db.save('cats', tom, (err, object) => {
+        if (err) return done(err);
+        tom._id = object._id;
+        tom.name = 'jerry';
+        db.update('cats', tom, (err, updatedObject) => {
+          if(err) return done(err);
+          const catObjectInFile= fs.readFileSync(`./data/cats/${tom._id}.json`);
+          assert.deepEqual(JSON.parse(catObjectInFile), tom);
+          assert.equal(updatedObject.name, 'jerry');
           done();
         });
       });
