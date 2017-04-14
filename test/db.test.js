@@ -167,7 +167,7 @@ describe('db', () => {
                 db.update('cats', maru, (err, data) => {
                     assert.equal(data._id, maru._id);
                     const updatedObject = fs.readFileSync(`${TEST_DIR}/cats/${maru._id}.json`, 'utf8');
-                    assert.equal(JSON.parse(updatedObject).name , 'buster');
+                    assert.equal(JSON.parse(updatedObject).name, 'buster');
                     done();
                 });
 
@@ -184,6 +184,32 @@ describe('db', () => {
             });
 
         });
+
+        describe('db.remove', () => {
+
+            before((done) => {
+                db.save('cats', testCat, (err, data) => {
+                    if (err) return done(err);
+                    testCat._id = data._id;
+                    done();
+                });
+            });
+            it('when removed it returns an object with the property true ', done => {
+                db.remove('cats', testCat._id, (err, data) => {
+                    assert.deepEqual(data, { removed: true });
+                    done();
+                });
+
+            });
+            it('when no matching ID it returns an object with the property false ', done => {
+                db.remove('cats', 485967, (err) => {
+                    assert.deepEqual(err, { removed: false });
+                    done();
+                });
+
+            });
+        });
+
     });
 
 });
