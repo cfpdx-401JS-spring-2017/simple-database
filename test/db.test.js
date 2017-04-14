@@ -1,18 +1,25 @@
 
 const assert = require('assert');
 const rimraf = require('rimraf');
+const fs = require('fs');
 const dbFactory = require('../lib/db-factory');
 const TEST_DIR = './data';
+
+
+
 const db = dbFactory(TEST_DIR);
 
 
-//create mock animal objects to pass into our test for the save function in db-factory.js
+//create mock animal objects to pass into our tests for the save function in db-factory.js
 const testCat = { name: 'testCat', type: 'best' };
 const testCat2 = { name: 'testCat2', type: '2ndbest' };
 const testDog = { name: 'testDog', type: 'bestDog' };
 const testDog2 = { name: 'testDog2', type: '2ndBestDog' };
+const maru = { name: 'maru', type: 'scottish fold' };
 
 describe('db', () => {
+
+    //QUESTION: why do we write these db.save hooks here instead of in the db.save require?
     before((done) => {
         db.save('cats', testCat, (err, data) => {
             if (err) return done(err);
@@ -91,16 +98,15 @@ describe('db', () => {
         });
 
         describe('db.save', () => {
+
             before((done) => {
                 rimraf(TEST_DIR, () => {
                     done();
                 });
             });
+
             it('saves the data into a file and returns the object with a new id', (done) => {
-                const maru = {
-                    name: 'maru',
-                    type: 'scottish fold'
-                };
+
                 //data in this callback = cat
                 db.save('cats', maru, (err, cat) => {
                     if (err) return done(err);
@@ -110,10 +116,13 @@ describe('db', () => {
                     done();
                 });
             });
+
             it('creates a directory if it doesn\'t exist', (done) => {
                 const baobao = { name: 'baobao', type: 'panda' };
+
                 db.save('bears', baobao, (err, data) => {
                     if (err) return done(err);
+                    //QUESTION: why do we use .get as a means to test .save?
                     db.get('bears', data._id, (err, data) => { //data here could also be bear
                         if (err) return done(err);
                         assert.equal(data.name, baobao.name);
@@ -151,7 +160,32 @@ describe('db', () => {
             });
 
         });
+        describe('db.update', () => {
+
+            it('reads _id property from the object and saves it with ID as file name', done => {
+                maru.name = 'buster';
+                db.update('cats', maru, (err, data) => {
+                    assert.equal(data._id, maru._id);
+                    const updatedObject = fs.readFileSync(`${TEST_DIR}/cats/${maru._id}.json`, 'utf8');
+                    assert.equal(JSON.parse(updatedObject).name , 'buster');
+                    done();
+                });
+
+            });
+
+
+            it('returns an error if no id is found', done => {
+                delete maru._id;
+                db.update('cats', maru, (err, data) => {
+                    assert.equal(err, 'Error: expected to have an _id proprty');
+                    done();
+                });
+
+            });
+
+        });
     });
+
 });
 
 
