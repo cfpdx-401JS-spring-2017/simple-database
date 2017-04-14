@@ -123,7 +123,7 @@ describe('db', () => {
                 db.save('bears', baobao, (err, data) => {
                     if (err) return done(err);
                     //QUESTION: why do we use .get as a means to test .save?
-                    db.get('bears', data._id, (err, data) => { //data here could also be bear
+                    db.get('bears', data._id, (err, data) => { 
                         if (err) return done(err);
                         assert.equal(data.name, baobao.name);
                         done();
@@ -176,7 +176,7 @@ describe('db', () => {
 
             it('returns an error if no id is found', done => {
                 delete maru._id;
-                db.update('cats', maru, (err, data) => {
+                db.update('cats', maru, (err) => {
                     assert.equal(err, 'Error: expected to have an _id proprty');
                     done();
                 });
@@ -215,7 +215,7 @@ describe('db', () => {
 });
 
 
-// in order to make a directory that doesn't exist we mkdirp
+
 
 
 
