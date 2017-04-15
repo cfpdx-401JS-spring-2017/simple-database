@@ -129,7 +129,7 @@ describe('db', () => {
   describe('db.update', () => {
     
     //TODO: Complete update function and pass test
-    it.only('updates and returns an object', done => {
+    it('updates and returns an object', done => {
       const obj = gongfucha;
       gongfucha.type = 'red panda';
       db.update('bears', obj, (err, data) => {
