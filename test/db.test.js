@@ -133,7 +133,7 @@ describe('db', () => {
       const obj = gongfucha;
       gongfucha.type = 'red panda';
       const id = gongfucha._id;
-      db.update('bears', obj, (err, update) => {
+      db.update('bears', obj, (err, update) => { //eslint-disable-line
         if (err) return done(err);
         db.get('bears', id, (err, update) => {
           if (err) return done(err);
