@@ -7,7 +7,6 @@
     "test": "test"
   },
   "scripts": {
-    "pretest": "eslint .",
     "test": "mocha",
     "test:watch": "npm test -- -w"
   },
@@ -22,6 +21,7 @@
   },
   "homepage": "https://github.com/VerteDinde/simple-database#readme",
   "devDependencies": {
+    "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "mocha": "^3.2.0",
     "rimraf": "^2.6.1"

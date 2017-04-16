@@ -132,10 +132,14 @@ describe('db', () => {
     it('updates and returns an object', done => {
       const obj = gongfucha;
       gongfucha.type = 'red panda';
-      db.update('bears', obj, (err, data) => {
+      const id = gongfucha._id;
+      db.update('bears', obj, (err, update) => {
         if (err) return done(err);
-        assert.equal(data, 'Panda!');
-        done();
+        db.get('bears', id, (err, update) => {
+          if (err) return done(err);
+          assert.equal(update.type, 'red panda');
+          done();
+        });
       });
     });
 
@@ -145,11 +149,9 @@ describe('db', () => {
         name: 'not real',
         type: 'imaginary' 
       };
-      db.update('bears', obj, (err, data) => {
+      db.update('bears', obj, err => {
         if (!err) return done(err);
-        console.log(data);
-        console.log(err);
-        assert.equal(err, 'Object does not exist.');
+        assert.ok(err, 'Error: Object does not exist.');
         done();
       });
     });

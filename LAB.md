@@ -17,7 +17,7 @@ Your db should offer the following methods:
   ```js
   const id = objectToUpdate._id;
   if(!id) {
-      callback(new Error('Expected object to have an _id property'));
+      callback(new Error('Object does not exist.'));
       return;
   }
   ```
