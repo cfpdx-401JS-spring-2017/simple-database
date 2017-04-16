@@ -10,6 +10,9 @@ const fluffy = {
 const swifty = {
   name: 'swifty',
   type: 'tabby' };
+const gongfucha = {
+  name: 'gongfucha',
+  type: 'panda' };
 
 describe('db', () => {
 
@@ -31,6 +34,14 @@ describe('db', () => {
     db.save('cats', swifty, (err, data) => {
       if (err) return done(err);
       swifty._id = data._id;
+      done();
+    });
+  });
+
+  before(done => {
+    db.save('bears', gongfucha, (err, data) => {
+      if (err) return done(err);
+      gongfucha._id = data._id;
       done();
     });
   });
@@ -93,4 +104,55 @@ describe('db', () => {
     });
 
   });
+
+  describe('db.remove', () => {
+
+    it('removes an object from a directory', done => {
+      const id = swifty._id;
+      db.remove('cats', id, (err, data) => {
+        if (err) return done(err);
+        assert.deepEqual(data, { removed: true });
+        done();
+      });
+    });
+
+    it('returns if object does not exist', done => {
+      const id = 'doesnotexist';
+      db.remove('cats', id, (err, data) => {
+        if (!err) return done(err);
+        assert.equal(data, { removed: false });
+        done();
+      });
+    });
+  });
+
+  describe('db.update', () => {
+    
+    it('updates and returns an object', done => {
+      const obj = gongfucha;
+      gongfucha.type = 'red panda';
+      const id = gongfucha._id;
+      db.update('bears', obj, (err, update) => { //eslint-disable-line
+        if (err) return done(err);
+        db.get('bears', id, (err, update) => {
+          if (err) return done(err);
+          assert.equal(update.type, 'red panda');
+          done();
+        });
+      });
+    });
+
+    it('returns error if object does not exist', done => {
+      const obj = {
+        name: 'not real',
+        type: 'imaginary' 
+      };
+      db.update('bears', obj, err => {
+        if (!err) return done(err);
+        assert.ok(err, 'Error: Object does not exist.');
+        done();
+      });
+    });
+  });
+
 });
