@@ -1,48 +1,40 @@
-<img src="https://cloud.githubusercontent.com/assets/478864/22186847/68223ce6-e0b1-11e6-8a62-0e3edc96725e.png" width=30> Simple Database Part 1: Three Tested Async Functions
+<img src="https://cloud.githubusercontent.com/assets/478864/22186847/68223ce6-e0b1-11e6-8a62-0e3edc96725e.png" width=30> Simple Database Part 3: Remove, Update and Publish!
 ===
 
 ## Description:
 
-For the second part of the assignment, create a factory module(a module that exports a function that can be called
-with configuration arguments to create a certain type of return object) that takes the name of an initial directory
-and returns an object with three asynchronous methods (functions on an obect).
+For part three of the assignment:
 
-You could also use a class, that you create with `new` keyword and pass in the initial root directory to the constructor.
-
-Use json as a file format to store (serialized and deserialized) javascript objects.
-
-**You are strongly encouraged to pair on this assignment**
-
-## Testing
-
-You should use TDD to drive the implementation. Note that these are mostly E2E (end to end) tests, but we will use the 
-basic structure of mocha's testing ability.
-
-The setup for the test can be difficult as we want to ensure the tests start with a "clean" file directory **(hint: this is where `rimraf` will come in handy)** You will want to read about [Mocha's before/after hooks](https://mochajs.org/#hooks)
-
-Initially, you can inspect the file system in your tests. 
-
-Your tests will need to handle asynchronous calls.  You will need to read about [Mocha and async support](https://mochajs.org/#asynchronous-code)
-
-### Bonus
-
-See if you can evolve your tests to not test the implementation (file system write), but rather use the logically
-connection between the three functions to test their respective actions.
+* Add tested `remove` and `update` methods to your db
+* Clean up your project
 
 ## Requirements/Guidelines
 
-For today, your db should offer the following methods:
+Your db should offer the following methods:
 
-* `.save(<table>, <objectToSave>, callback)`
-  * creates a `_id` property for the object
-  * saves the object in a file, where the filename is the `_id`. e.g. if the id is 12345, the file will be 12345.json
-  * returns `objectToSave` with added `_id` property
-* `.get(<table>, <id>, callback)`
-  * returns the object from the requested table that has that id
-  * return `null` if that id does not exist
-* `.getAll(<table>, callback)`
-  * returns array of all objects from the requested table
-  * return empty array `[]` when no objects
+* `.update(<table>, <objectToUpdate>, callback)`
+  * reads the `_id` property from the object (error if it is not found):
+  ```js
+  const id = objectToUpdate._id;
+  if(!id) {
+      callback(new Error('Expected object to have an _id property'));
+      return;
+  }
+  ```
+  * saves the provided object as the new file
+  * returns `objectToUpdate`
+* `.remove(<table>, <id>, callback)`
+  * removes the object from the requested table that has that id
+  * return `{ removed: true }` if the object was removed, else return `{ removed: false }` if the 
+  object did not exist
+  
+**You are strongly encouraged to pair on this assignment**
+
+
+### Bonus
+
+1. Adda README.md that describes how to use your simple db
+2. Publish to npm
 
 
 Here is an example of how your module might be imported (required) and used:
