@@ -1,59 +1,70 @@
-<img src="https://cloud.githubusercontent.com/assets/478864/22186847/68223ce6-e0b1-11e6-8a62-0e3edc96725e.png" width=30> Simple Database Part 2: Three Tested Async Functions
+<img src="https://cloud.githubusercontent.com/assets/478864/22186847/68223ce6-e0b1-11e6-8a62-0e3edc96725e.png" width=30> Simple Database Part 3: Remove, Update and Publish!
 ===
-
-## Doc/Resources
-* [Node fs docs](https://nodejs.org/api/fs.html) - specifically the methods `readFile` and `writeFile`
-
-* JSON [stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) 
-and [parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
-* Checkout `mkdirp` and `rimraf` on `npm`
 
 ## Description:
 
-In this first part of the assignment, create a function that retrieves an object given a directory, a table name, and an id.
+For part three of the assignment:
 
-Use json as a file format to store (serialized and deserialized) javascript objects.
-
-**You are strongly encouraged to pair on this assignment**
-
-## Testing
-
-You should use TDD to drive the implementation. Note that these are mostly E2E (end to end) tests, but we will use the 
-basic structure of mocha's testing ability.
-
-The setup for the test can be difficult as we want to ensure the tests start with a "clean" file directory **(hint: this is where `rimraf` will come in handy)** You will want to read about [Mocha's before/after hooks](https://mochajs.org/#hooks)
-
-Initially, you can inspect the file system in your tests. 
-
-Your tests will need to handle asynchronous calls.  You will need to read about [Mocha and async support](https://mochajs.org/#asynchronous-code)
-
+* Add tested `remove` and `update` methods to your db
+* Clean up your project
 
 ## Requirements/Guidelines
 
 Your db should offer the following methods:
 
-* `getObject(<rootDir>, <table>, <id>, callback)`
-  * returns the object from the requested table that has that id (where file names are `<id>.json`
-  * return `null` if that id does not exist
+* `.update(<table>, <objectToUpdate>, callback)`
+  * reads the `_id` property from the object (error if it is not found):
+  ```js
+  const id = objectToUpdate._id;
+  if(!id) {
+      callback(new Error('Object does not exist.'));
+      return;
+  }
+  ```
+  * saves the provided object as the new file
+  * returns `objectToUpdate`
+* `.remove(<table>, <id>, callback)`
+  * removes the object from the requested table that has that id
+  * return `{ removed: true }` if the object was removed, else return `{ removed: false }` if the 
+  object did not exist
+  
+**You are strongly encouraged to pair on this assignment**
+
+
+### Bonus
+
+1. Adda README.md that describes how to use your simple db
+2. Publish to npm
 
 
 Here is an example of how your module might be imported (required) and used:
 
 ```js
-const getObject = require('./getObject');
+const makeDb = require('./db-factory');
 
+const db = makeDb('./data');
+
+db.save('cats', { name: 'garfield' }, (err, cat) => {
+  
+    if(err) return console.log('ERROR', err);
     
-getObject('./data', 'cats', id, (err, cat) => {
+    const id = cat._id;
+    
+    db.get('cats', id, (err, cat) => {
+      if(err) return console.log('ERROR', err);
+      console.log('got cat', cat);
+    } 
+});
+
+db.getAll('cats', (err, cats) => {
   if(err) return console.log('ERROR', err);
-  console.log('got cat', cat);
-} 
+  console.log('we have', cats.length, 'cats');
+});
 ```
 
-Make sure to test:
 
-* Two types of "objects" (e.g. "cats" vs "dogs")
-* Two different id's of same object type.
-
+* Use an npm package to find a library to assign id's (there are tons), e.g. [shortid](https://www.npmjs.com/package/shortid) or [uuid](https://www.npmjs.com/package/uuid)
+* Use the supplied table name as a folder to store objects, and use the id as the file name:
 
   ```
   ---+ data
@@ -65,12 +76,6 @@ Make sure to test:
         +---* 65rej5.json
         |
         +---* 93odb2.json
-     |
-     +--+ dogs
-        |
-        +---* 3tlf4.json
-        |
-        +---* 23dew3.json
   ```
       
 * Use `JSON.parse` and `JSON.stringify` to move from javascript object to file representation
