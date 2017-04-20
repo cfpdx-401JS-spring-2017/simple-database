@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/kawallis/simple-database#readme",
   "devDependencies": {
+    "eslint": "^3.19.0",
     "mocha": "^3.2.0"
   },
   "dependencies": {
