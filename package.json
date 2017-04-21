@@ -1,0 +1,30 @@
+{
+  "name": "simple-database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "eslint .",
+    "test": "mocha",
+    "test:watch": "npm test -- -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawallis/simple-database.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kawallis/simple-database/issues"
+  },
+  "homepage": "https://github.com/kawallis/simple-database#readme",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.1",
+    "shortid": "^2.2.8"
+  }
+}
