@@ -30,6 +30,7 @@
     "fs": "0.0.1-security",
     "fs-promise": "^2.0.2",
     "mkdirp": "^0.5.1",
+    "mkdirp-promise": "^5.0.1",
     "path": "^0.12.7",
     "rimraf": "^2.6.1",
     "shortid": "^2.2.8"
