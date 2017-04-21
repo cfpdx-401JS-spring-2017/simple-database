@@ -86,7 +86,7 @@ describe('db', () => {
     });
     describe('tests for empty array', () => {
         // before((done) => {
-        //     rimraf('./data/bears', err => {
+        //     rimraf('./data/dolphins', err => {
         //         if(err) return done(err);
         //         done(err);
         //     });
