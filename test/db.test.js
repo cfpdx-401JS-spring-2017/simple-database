@@ -85,12 +85,12 @@ describe('db', () => {
         });
     });
     describe('tests for empty array', () => {
-        // before((done) => {
-        //     rimraf('./data/dolphins', err => {
-        //         if(err) return done(err);
-        //         done(err);
-        //     });
-        // });
+        before((done) => {
+            fs.mkdir('./data/dolphins', err => {
+                if(err) return done(err);
+                done(err);
+            });
+        });
         it('returns an empty array if the requested table is empty', done => {
             db.getAll('dolphins', (err, dolphins) => {
                 if(err) return done(err);
