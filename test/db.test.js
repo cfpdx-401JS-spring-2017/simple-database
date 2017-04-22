@@ -6,6 +6,15 @@ const fs = require('fs');
 const TEST_DIR = './data';
 const db = dbFactory(TEST_DIR);
 
+function rimrafp() {
+  return new Promise((resolve, reject) => {
+    rimraf(TEST_DIR, err => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+}
+
 describe('db', () => {
   const testCat = {
     name: 'testcat',
@@ -16,179 +25,154 @@ describe('db', () => {
     type: 'worst'
   };
 
-  before((done) => {
-    db.save('cats', testCat, (err, data) => {
-      if (err) return done(err);
-      testCat._id = data._id;
-      done();
-    });
+  before(() => {
+    return db.save('cats', testCat)
+      .then(cat => testCat._id = cat._id);
   });
 
-  before((done) => {
-    db.save('cats', testCat2, (err, data) => {
-      if (err) return done(err);
-      testCat2._id = data._id;
-      done();
-    });
+  before(() => {
+    return db.save('cats', testCat2)
+      .then(cat => testCat2._id = cat._id);
   });
 
   describe('db.get()', () => {
 
-    it('returns null when no object with that id is found', done => {
-      db.get('dogs', 'wrong', (err, data) => {
-        assert.deepEqual(data, null);
-        done();
-      });
+    it('returns null when no object with that id is found', () => {
+      return db.get('dogs', 'wrong')
+        .then((dog) => {
+          assert.deepEqual(dog, null);
+        });
     });
 
-    it('gets an cat given an id', done => {
-      db.get('cats', testCat._id, (err, data) => {
-        if (err) return done(err);
-        assert.equal(data.name, testCat.name);
-        assert.equal(data._id, testCat._id);
-        done();
-      });
+    it('gets an cat given an id', () => {
+      return db.get('cats', testCat._id)
+        .then((cat) => {
+          assert.equal(cat.name, testCat.name);
+          assert.equal(cat._id, testCat._id);
+        });
     });
 
-    it('gets a cat given different id', done => {
-      db.get('cats', testCat2._id, (err, data) => {
-        if (err) return done(err);
-        assert.equal(data._id, testCat2._id);
-        done();
-      });
+    it('gets a cat given different id', () => {
+      return db.get('cats', testCat2._id)
+        .then((cat) => {
+          assert.equal(cat._id, testCat2._id);
+        });
     });
   });
 
   describe('db.save', () => {
 
-    before((done) => {
-      rimraf(TEST_DIR, err => {
-        done(err);
-      });
-    });
+    before(() => rimrafp(TEST_DIR));
 
-    it('saves the data into a file and returns the object with a new id', (done) => {
+    it('saves the data into a file and returns the object with a new id', () => {
       const maru = {
         name: 'maru',
         type: 'scottish fold'
       };
 
-      db.save('cats', maru, (err, cat) => {
-        if (err) return done(err);
-        assert.equal(cat.name, maru.name);
-        assert.ok(cat._id);
-        done();
-      });
+      return db.save('cats', maru)
+        .then((cat) => {
+          assert.equal(cat.name, maru.name);
+          assert.ok(cat._id);
+        });
     });
 
-    it('creates a directory if it doesn\'t exist', (done) => {
+    it('creates a directory if it doesn\'t exist', () => {
       const baobao = { name: 'baobao', type: 'panda' };
 
-      db.save('bears', baobao, (err, data) => {
-        if (err) return done(err);
-
-        db.get('bears', data._id, (err, bear) => {
-          if (err) return done(err);
+      return db.save('bears', baobao)
+        .then((bear) => {
+          db.get('bears', bear._id);
           assert.equal(bear.name, baobao.name);
-          done();
         });
-      });
     });
   });
+});
 
-  describe('db.getAll', () => {
+describe('db.getAll', () => {
 
-    it('checks that we retrieve an array of the objects in the files in target directory', (done) => {
-      db.getAll('bears', (err, bearsArray) => {
-        if (err) return done(err);
+  it('checks that we retrieve an array of the objects in the files in target directory', () => {
+    return db.getAll('bears')
+      .then((bearsArray) => {
         assert.equal(bearsArray[0].name, 'baobao');
         assert.equal(bearsArray.length, 1);
-        done();
       });
-    });
+  });
 
-    it('checks that array of the objects is in in expected order', (done) => {
-      const garfield = {
-        name: 'garfield',
-      };
+  it('checks that array of the objects is in in expected order', () => {
+    const garfield = {
+      name: 'garfield',
+    };
+    return db.save('cats', garfield)
+      .then(() => db.getAll('cats'))
+      .then((catsArray) => {
+        assert.equal(catsArray.length, 2);
+      });
+  });
+});
 
-      db.save('cats', garfield, err => {
+describe('db.update', () => {
+
+  it('checks that targeted object is hit and content was updated and saved correctly', () => {
+    const tom = {
+      name: 'tom',
+    };
+
+    return db.save('cats', tom)
+      .then((cat) => {
+        tom._id = cat._id;
+        tom.name = 'jerry';
+        db.update('cats', tom);
+      })
+      .then((tom) => {
+        const catObjectInFile = fs.readFileSync(`./data/cats/${tom._id}.json`);
+        assert.deepEqual(JSON.parse(catObjectInFile), tom);
+        assert.equal(catObjectInFile.name, 'jerry');
+      });
+  });
+});
+
+describe('db.remove', () => {
+
+  it('checks that function deletes targeted file', done => {
+    const dutchess = {
+      name: 'dutchess',
+    };
+
+    db.save('cats', dutchess, (err, object) => {
+      if (err) return done(err);
+      dutchess._id = object._id;
+
+      db.remove('cats', object._id, (err, removed) => {
         if (err) return done(err);
 
         db.getAll('cats', (err, catsArray) => {
           if (err) return done(err);
-          assert.equal(catsArray.length, 2);
+          assert.equal(catsArray.length, 3);
+          assert.ok(removed);
           done();
         });
       });
     });
   });
 
-  describe('db.update', () => {
+  it('checks that function deletes a different file', done => {
+    const pauli = {
+      name: 'pauli',
+    };
 
-    it('checks that targeted object is hit and content was updated and saved correctly', done => {
-      const tom = {
-        name: 'tom',
-      };
+    db.save('bears', pauli, (err, object) => {
+      if (err) return done(err);
+      pauli._id = object._id;
 
-      db.save('cats', tom, (err, object) => {
+      db.remove('bears', object._id, (err, removed) => {
         if (err) return done(err);
-        tom._id = object._id;
-        tom.name = 'jerry';
 
-        db.update('cats', tom, (err, updatedObject) => {
+        db.getAll('bears', (err, bearsArray) => {
           if (err) return done(err);
-          const catObjectInFile = fs.readFileSync(`./data/cats/${tom._id}.json`);
-          assert.deepEqual(JSON.parse(catObjectInFile), tom);
-          assert.equal(updatedObject.name, 'jerry');
+          assert.equal(bearsArray.length, 1);
+          assert.ok(removed);
           done();
-        });
-      });
-    });
-  });
-
-  describe('db.remove', () => {
-
-    it('checks that function deletes targeted file', done => {
-      const dutchess = {
-        name: 'dutchess',
-      };
-
-      db.save('cats', dutchess, (err, object) => {
-        if (err) return done(err);
-        dutchess._id = object._id;
-
-        db.remove('cats', object._id, (err, removed) => {
-          if (err) return done(err);
-
-          db.getAll('cats', (err, catsArray) => {
-            if (err) return done(err);
-            assert.equal(catsArray.length, 3);
-            assert.ok(removed);
-            done();
-          });
-        });
-      });
-    });
-
-    it('checks that function deletes a different file', done => {
-      const pauli = {
-        name: 'pauli',
-      };
-
-      db.save('bears', pauli, (err, object) => {
-        if (err) return done(err);
-        pauli._id = object._id;
-
-        db.remove('bears', object._id, (err, removed) => {
-          if (err) return done(err);
-
-          db.getAll('bears', (err, bearsArray) => {
-            if (err) return done(err);
-            assert.equal(bearsArray.length, 1);
-            assert.ok(removed);
-            done();
-          });
         });
       });
     });
