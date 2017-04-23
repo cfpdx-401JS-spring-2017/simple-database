@@ -14,13 +14,15 @@ const gongfucha = {
   name: 'gongfucha',
   type: 'panda' };
 
+function rimrafP() {
+  return new Promise((resolve, reject) => {
+    rimraf(ROOT_DIR, err => err? reject(err): resolve());
+  });
+}
+
 describe('db', () => {
 
-  before(done => {
-    rimraf(ROOT_DIR, err => {
-      done(err);
-    });
-  });
+  before(() => { return rimrafP(ROOT_DIR); });
 
   before(() => {
     return db.save('cats', fluffy)
@@ -128,7 +130,7 @@ describe('db', () => {
       gongfucha.type = 'red panda';
       const id = gongfucha._id;
       return db.update('bears', obj)
-      .then(update => {
+      .then(() => {
         return db.get('bears', id)
         .then(update => {
           assert.equal(update.type, 'red panda');
