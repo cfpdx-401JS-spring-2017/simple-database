@@ -1,33 +1,34 @@
 const assert = require('assert');
 const rimraf = require('rimraf');
 const dbFactory = require('../lib/db-factory');
-const fs = require('fs');
+const fsp = require('fs-promise');
 
 const TEST_DIR = './data';
 const db = dbFactory(TEST_DIR);
+const testCat = {
+  name: 'testcat',
+  type: 'best'
+};
+const testCat2 = {
+  name: 'testcat2',
+  type: 'worst'
+};
 
 function rimrafp() {
   return new Promise((resolve, reject) => {
-    rimraf(TEST_DIR, err => {
-      if (err) reject(err);
-      else resolve();
-    });
+    rimraf(TEST_DIR, err => err ? reject(err) : resolve());
   });
 }
 
+
 describe('db', () => {
-  const testCat = {
-    name: 'testcat',
-    type: 'best'
-  };
-  const testCat2 = {
-    name: 'testcat2',
-    type: 'worst'
-  };
 
   before(() => {
     return db.save('cats', testCat)
-      .then(cat => testCat._id = cat._id);
+      .then(cat => testCat._id = cat._id)
+      .catch(err => {
+        throw new Error(err);
+      });
   });
 
   before(() => {
@@ -39,14 +40,14 @@ describe('db', () => {
 
     it('returns null when no object with that id is found', () => {
       return db.get('dogs', 'wrong')
-        .then((dog) => {
-          assert.deepEqual(dog, null);
+        .then(dog => {
+          assert.equal(dog, null);
         });
     });
 
-    it('gets an cat given an id', () => {
+    it('gets a cat given an id', () => {
       return db.get('cats', testCat._id)
-        .then((cat) => {
+        .then(cat => {
           assert.equal(cat.name, testCat.name);
           assert.equal(cat._id, testCat._id);
         });
@@ -54,9 +55,7 @@ describe('db', () => {
 
     it('gets a cat given different id', () => {
       return db.get('cats', testCat2._id)
-        .then((cat) => {
-          assert.equal(cat._id, testCat2._id);
-        });
+        .then(cat => assert.equal(cat._id, testCat2._id));
     });
   });
 
@@ -91,6 +90,13 @@ describe('db', () => {
 
 describe('db.getAll', () => {
 
+  it('gets all objects, returns an array', () => {
+    return db.getAll('cats')
+      .then(cats => {
+        assert.equal(cats.length, 1);
+      });
+  });
+
   it('checks that we retrieve an array of the objects in the files in target directory', () => {
     return db.getAll('bears')
       .then((bearsArray) => {
@@ -98,83 +104,49 @@ describe('db.getAll', () => {
         assert.equal(bearsArray.length, 1);
       });
   });
-
-  it('checks that array of the objects is in in expected order', () => {
-    const garfield = {
-      name: 'garfield',
-    };
-    return db.save('cats', garfield)
-      .then(() => db.getAll('cats'))
-      .then((catsArray) => {
-        assert.equal(catsArray.length, 2);
-      });
-  });
 });
 
 describe('db.update', () => {
 
-  it('checks that targeted object is hit and content was updated and saved correctly', () => {
-    const tom = {
-      name: 'tom',
-    };
+  it('checks that targeted object is hit and content was updated and saved correctly',
+    () => {
+      const toUpdate = testCat;
+      toUpdate.name = 'jerry';
 
-    return db.save('cats', tom)
-      .then((cat) => {
-        tom._id = cat._id;
-        tom.name = 'jerry';
-        db.update('cats', tom);
-      })
-      .then((tom) => {
-        const catObjectInFile = fs.readFileSync(`./data/cats/${tom._id}.json`);
-        assert.deepEqual(JSON.parse(catObjectInFile), tom);
-        assert.equal(catObjectInFile.name, 'jerry');
-      });
-  });
+      return db.update('cats', testCat)
+        .then(() => {
+          return db.get('cats', testCat._id)
+            .then(updated => {
+              assert.deepEqual(updated.name, 'jerry');
+            });
+        });
+    });
 });
 
 describe('db.remove', () => {
 
-  it('checks that function deletes targeted file', done => {
+  it('checks that function deletes targeted file', () => {
     const dutchess = {
       name: 'dutchess',
     };
 
-    db.save('cats', dutchess, (err, object) => {
-      if (err) return done(err);
-      dutchess._id = object._id;
-
-      db.remove('cats', object._id, (err, removed) => {
-        if (err) return done(err);
-
-        db.getAll('cats', (err, catsArray) => {
-          if (err) return done(err);
-          assert.equal(catsArray.length, 3);
-          assert.ok(removed);
-          done();
+    db.save('cats', dutchess)
+      .then(saved => dutchess._id = saved._id)
+      .then(() => db.remove('cats', dutchess._id))
+      .then(data => {
+        assert.deepEqual(data, { removed: true });
+        return db.getAll('cats')
+        .then(cats => {
+          assert.equal(cats.length, 3);
         });
       });
-    });
   });
 
-  it('checks that function deletes a different file', done => {
-    const pauli = {
-      name: 'pauli',
-    };
-
-    db.save('bears', pauli, (err, object) => {
-      if (err) return done(err);
-      pauli._id = object._id;
-
-      db.remove('bears', object._id, (err, removed) => {
-        if (err) return done(err);
-
-        db.getAll('bears', (err, bearsArray) => {
-          if (err) return done(err);
-          assert.equal(bearsArray.length, 1);
-          assert.ok(removed);
-          done();
-        });
+  it('returns removed false if object does not exist', () => {
+    const id = 'notReal';
+    return db.remove('cats', id)
+      .then(data => {
+        assert.deepEqual(data, { removed: false });
       });
-    });
   });
 });
