@@ -130,14 +130,14 @@ describe('db.remove', () => {
       name: 'dutchess',
     };
 
-    db.save('cats', dutchess)
+    return db.save('cats', dutchess)
       .then(saved => dutchess._id = saved._id)
       .then(() => db.remove('cats', dutchess._id))
       .then(data => {
         assert.deepEqual(data, { removed: true });
         return db.getAll('cats')
         .then(cats => {
-          assert.equal(cats.length, 3);
+          assert.equal(cats.length, 2);
         });
       });
   });
