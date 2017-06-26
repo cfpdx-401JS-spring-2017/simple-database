@@ -92,6 +92,44 @@ describe('db', () => {
     });
   });
 
+  describe('db.remove', () => {
 
+    it('removes an object from a directory', done => {
+      const id = garfield._id;
+      db.remove('cats', id, (err, data) => {
+        if (err) return done(err);
+        assert.equal(data, { removed: true });
+      });
+      done();
+    });
+
+    it('returns if object does not exist', done => {
+      const id = 'doesnotexist';
+      db.remove('cats', id, (err, data) => {
+        if (!err) return done(err);
+        assert.equal(data, { removed: false });
+        done();
+      });
+    });
+  });
+
+  describe('db.update', () => {
+
+    it('saves the provided object as a new file', done => {
+      felix.testProp = true;
+      db.update('cats', felix, (err, cat) => {
+        if (err) return done(err);
+        assert.equal(cat.testProp, true);
+        done();
+      });
+    });
+
+    it('should return the object that was updated', done => {
+      db.update('cats', felix, (err, cat) => {
+        if (err) return done(err);
+        assert.deepEqual(cat, felix);
+        done();
+      });
+    });
+  });
 });
-
