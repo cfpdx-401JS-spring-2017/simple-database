@@ -1,42 +1,46 @@
 const assert = require('assert');
 const dbFactory = require('../lib/db-factory');
 const rimraf = require('rimraf');
+
 const testDir = './data';
 const db = dbFactory(testDir);
 
-describe('db.get', () => {
+const felix = { name: 'felix', type: 'stripey' };
+const garfield = { name: 'garfield', type: 'lazagna-lover' };
+
+
+describe('db', () => {
 
   before(done => {
-    rimraf('./data/bears', err => {
-      if(err) return done(err);
+    rimraf(testDir, err => {
       done(err);
     });
   });
 
-  it('returns null when no object with that id is found', done => {
-    db.get('dogs', 'wrong', (err, data) => {
-      assert.deepEqual(data, null);
+  before(done => {
+    db.save('cats', felix, (err, data) => {
+      if (err) return done(err);
+      felix._id = data._id;
       done();
     });
   });
 
-  it('gets a cat given an id', done => {
-    db.get('cats', 'f1de5', (err, data) => {
+  before(done => {
+    db.save('cats', garfield, (err, data) => {
       if (err) return done(err);
-      assert.deepEqual(data, {
-        'name': 'fluffy',
-        '_id': 'f1de5'
-      });
+      garfield._id = data._id;
+      done();
     });
-    done();
   });
 
   describe('db.save', () => {
+
     it('saves data into a file and returns object with new id', (done) => {
       const maru = {
         name: 'Maru',
         type: 'scottish fold'
       };
+
       db.save('cats', maru, (err, cat) => {
         if (err) return done(err);
         assert.equal(cat.name, maru.name);
@@ -44,16 +48,52 @@ describe('db.get', () => {
         done();
       });
     });
-    it('creates a directory if it does not exist', () => {
-      const baobao = {name: 'baobao', type: 'panda'};
+
+    it('creates a directory if it does not exist', done => {
+      const baobao = { name: 'baobao', type: 'panda' };
       db.save('bears', baobao, (err, data) => {
-        if(err) return done(err);
+        if (err) return done(err);
         db.get('bears', data._id, (err, bear) => {
-          if(err) return done(err);
+          if (err) return done(err);
           assert.equal(bear.name, baobao.name);
           done();
         });
       });
     });
   });
+
+  describe('db.get', () => {
+
+    it('gets a cat given an id', done => {
+      db.get('cats', 'f1de5', (err, data) => {
+        if (err) return done(err);
+        assert.deepEqual(data, {
+          'name': 'fluffy',
+          '_id': 'f1de5'
+        });
+      });
+      done();
+    });
+
+    it('returns null when no object with that id is found', done => {
+      db.get('dogs', 'wrong', (err, data) => {
+        assert.deepEqual(data, null);
+        done();
+      });
+    });
+  });
+
+  describe('db.getAll', () => {
+
+    it('gets all objects in testDir, returns array', done => {
+      db.getAll('cats', (err, cats) => {
+        if (err) return done(err);
+        assert.equal(cats.length, 3);
+        done();
+      });
+    });
+  });
+
+
 });
+
