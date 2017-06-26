@@ -65,12 +65,10 @@ describe('db', () => {
   describe('db.get', () => {
 
     it('gets a cat given an id', done => {
-      db.get('cats', 'f1de5', (err, data) => {
-        if (err) return done(err);
-        assert.deepEqual(data, {
-          'name': 'fluffy',
-          '_id': 'f1de5'
-        });
+      const id = garfield._id;
+      db.get('cats', id, (err, cat) => {
+        assert.equal(cat._id, garfield._id);
+        assert.equal(cat.name, garfield.name);
       });
       done();
     });
